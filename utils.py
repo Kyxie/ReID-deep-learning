@@ -8,7 +8,6 @@ import os.path as osp
 
 import torch
 
-
 def mkdir_if_missing(directory):
     if not osp.exists(directory):
         try:
