@@ -109,6 +109,16 @@ class Market1501(object):
         num_imgs = len(img_paths) # How many images
         return dataset, num_pids, num_imgs
 
+__img_factory = {
+    'market1501': Market1501
+}
+
+def init_img_dataset(name, **kwargs):
+    if name not in __img_factory.keys():
+        raise KeyError(
+            "Invalid dataset, got '{}', but expected to be one of {}".format(name, __img_factory.keys()))
+    return __img_factory[name](**kwargs)
+
 # if __name__ == '__main__':
 #     data = Market1501()
 #     data.__init__()

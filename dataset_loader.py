@@ -1,9 +1,6 @@
 from __future__ import print_function, absolute_import
-import os
 from PIL import Image
-import numpy as np
 import os.path as osp
-import torch
 from torch.utils.data import Dataset
 
 # Check image
@@ -32,8 +29,12 @@ class ImageDataset(Dataset):
         img_path, pid, camid = self.dataset[index]
         img = read_image(img_path)
         if self.transform is not None:
-            img = self.transorm(img)
+            img = self.transform(img)
         return img, pid, camid
 
-if __name__ == '__main__':
-    pass
+# if __name__ == '__main__':
+#     import data_manager
+#     dataset = data_manager.init_img_dataset(root='data', name='market1501')
+#     train_loader = ImageDataset(dataset.train)
+#     from IPython import embed
+#     embed()
