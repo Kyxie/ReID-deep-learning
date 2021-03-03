@@ -1,3 +1,5 @@
+# General ResNet code
+
 import torch.nn as nn
 import torch
 
