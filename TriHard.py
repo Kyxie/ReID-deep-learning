@@ -2,7 +2,6 @@
 # Engineer: Kunyang Xie
 # Last Update: 4/3/2021
 
-
 from __future__ import absolute_import
 import torch
 from torch import nn
@@ -24,19 +23,19 @@ class TriHardLoss(nn.Module):
     def forward(self, inputs, targets):
         """
         Args:
-            inputs: feature matrix with shape (batch_size, feat_dim)
+            inputs: feature matrix with shape (batch_size, feat_dim)    32 * 2048
             targets: ground truth labels with shape (num_classes)
         """
-        n = inputs.size(0)
-
-        # # Normalization
-        # x = 1. * x / (torch.norm(x, 2, dim=-1, keepdim=True).expand_as(x) + 1e-12)
+        n = inputs.size(0)  # batch size = 32
 
         # distance matrix
         dist = torch.pow(inputs, 2).sum(dim=1, keepdim=True).expand(n, n)
         dist = dist + dist.t()
         dist.addmm_(1, -2, inputs, inputs.t())
         dist = dist.clamp(min=1e-12).sqrt()
+
+        # # Normalization
+        # dist = 1. * dist / (torch.norm(dist, 2, dim=-1, keepdim=True).expand_as(dist) + 1e-12)
 
         # mask, red & green
         mask = targets.expand(n, n).eq(targets.expand(n, n).t())
@@ -53,6 +52,6 @@ class TriHardLoss(nn.Module):
 # if __name__ == '__main__':
 #     target = [1,1,1,1, 2,2,2,2, 3,3,3,3, 4,4,4,4, 5,5,5,5, 6,6,6,6, 7,7,7,7, 8,8,8,8]
 #     target = torch.Tensor(target)
-#     feature = torch.Tensor(32, 2048)
+#     input = torch.zeros(32, 2048)
 #     a = TriHardLoss()
-#     print(a.forward(feature, target))
+#     print(a.forward(input, target))
