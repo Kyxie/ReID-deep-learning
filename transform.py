@@ -35,5 +35,5 @@ class Random2DTranslation(object):
         croped_img = resized_img.crop((x1, y1, x1 + self.width, y1 + self.height))
         return croped_img
 
-if __name__ == '__main__':
-    pass
+# if __name__ == '__main__':
+#     pass

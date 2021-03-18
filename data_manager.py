@@ -1,7 +1,7 @@
 from __future__ import print_function, absolute_import
-import os.path as osp
 import glob
 import re
+import os.path as osp
 
 class Market1501(object):
     """
@@ -113,11 +113,22 @@ __img_factory = {
     'market1501': Market1501
 }
 
+__vid_factory = {
+    ...
+}
+
+def get_names():
+    # return __img_factory.keys() + __vid_factory.keys()
+    return __img_factory.keys()
+
 def init_img_dataset(name, **kwargs):
     if name not in __img_factory.keys():
         raise KeyError(
             "Invalid dataset, got '{}', but expected to be one of {}".format(name, __img_factory.keys()))
     return __img_factory[name](**kwargs)
+
+def init_vid_dataset(name, **kwargs):
+    pass
 
 # if __name__ == '__main__':
 #     data = Market1501()
