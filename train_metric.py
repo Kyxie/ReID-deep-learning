@@ -99,10 +99,10 @@ def train(epoch, model, criterion_class, criterion_metric, optimizer, trainloade
         losses.update(loss.item(), pids.size(0))
 
         if (batch_idx+1) % args.print_freq == 0:
-            print("--------------------------------------------------------------------------------------------------------------")
+            print("---------------------------------------------------------------------------------------------------------------")
             print("  Epoch: {0} | Batch: [{1}/{2}] | Batch Time: {batch_time.val:.3f} s | Loss: {loss.avg:.4f} | Repr Loss: {xent_loss.avg:.4f} |  Metric Loss: {triplet_loss.avg:.4f}"
                   .format(epoch+1, batch_idx+1, len(trainloader), batch_time=batch_time, loss=losses, xent_loss=xent_losses, triplet_loss=triplet_losses))
-            print("--------------------------------------------------------------------------------------------------------------")
+            print("---------------------------------------------------------------------------------------------------------------")
 
 def test(model, queryloader, galleryloader, use_gpu, ranks=[1, 5, 10, 20]):
     batch_time = AverageMeter()
