@@ -35,7 +35,7 @@ parser.add_argument('--width', type=int, default=128, help="width of an image (d
 
 # Optimization options
 parser.add_argument('--optim', type=str, default='adam', help="optimization algorithm (see optimizers.py)")
-parser.add_argument('--max-epoch', default=60, type=int, help="maximum epochs to run")
+parser.add_argument('--max-epoch', default=1, type=int, help="maximum epochs to run")
 parser.add_argument('--start-epoch', default=0, type=int, help="manual epoch number (useful on restarts)")
 parser.add_argument('--train-batch', default=32, type=int, help="train batch size")
 parser.add_argument('--test-batch', default=32, type=int, help="test batch size")
@@ -53,7 +53,7 @@ parser.add_argument('--htri-only', action='store_true', default=False, help="if 
 parser.add_argument('-a', '--arch', type=str, default='resnet50', choices=models.get_names())
 
 # Miscs
-parser.add_argument('--print-freq', type=int, default=10, help="print frequency")
+parser.add_argument('--print-freq', type=int, default=1, help="print frequency")
 parser.add_argument('--seed', type=int, default=1, help="manual seed")
 parser.add_argument('--resume', type=str, default='', metavar='PATH')
 parser.add_argument('--evaluate', action='store_true', help="evaluation only")
@@ -94,17 +94,15 @@ def train(epoch, model, criterion_class, criterion_metric, optimizer, trainloade
 
         batch_time.update(time.time() - end)
         end = time.time()
+        xent_losses.update(xent_loss.item(), pids.size(0))
+        triplet_losses.update(triplet_loss.item(), pids.size(0))
         losses.update(loss.item(), pids.size(0))
 
         if (batch_idx+1) % args.print_freq == 0:
-            print('Epoch [{0}] Batch [{1}/{2}]\t'
-                  'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
-                  'Data {data_time.val:.3f} ({data_time.avg:.3f})\t'
-                  'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
-                  'CLoss {xent_loss.val:.4f} ({loss.avg:.4f})\t'
-                  'MLoss {triplet_loss.val:.4f} ({loss.avg:.4f})\t'.format(
-                   epoch+1, batch_idx+1, len(trainloader), batch_time=batch_time,
-                   data_time=data_time, loss=losses, xent_loss=xent_losses, triplet_loss=triplet_losses))
+            print("--------------------------------------------------------------------------------------------------------------")
+            print("  Epoch: {0} | Batch: [{1}/{2}] | Batch Time: {batch_time.val:.3f} s | Loss: {loss.avg:.4f} | Repr Loss: {xent_loss.avg:.4f} |  Metric Loss: {triplet_loss.avg:.4f}"
+                  .format(epoch+1, batch_idx+1, len(trainloader), batch_time=batch_time, loss=losses, xent_loss=xent_losses, triplet_loss=triplet_losses))
+            print("--------------------------------------------------------------------------------------------------------------")
 
 def test(model, queryloader, galleryloader, use_gpu, ranks=[1, 5, 10, 20]):
     batch_time = AverageMeter()
