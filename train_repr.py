@@ -20,7 +20,6 @@ from utils import AverageMeter, Logger, save_checkpoint
 from eval_metrics import evaluate
 
 parser = argparse.ArgumentParser(description='Train image model with ring loss')
-
 # Datasets
 parser.add_argument('--root', type=str, default='data', help="root path to data directory")
 parser.add_argument('-d', '--dataset', type=str, default='market1501', choices=data_manager.get_names())
@@ -115,7 +114,7 @@ def main():
     )
 
     print("Initializing model: {}".format(args.arch))
-    model = models.init_model(name=args.arch, num_classes=dataset.num_train_pids, loss='softmax')
+    model = models.init_model(name=args.arch, num_classes=dataset.num_train_pids, loss={'softmax'})
     print("Model size: {:.5f}M".format(sum(p.numel() for p in model.parameters()) / 1000000.0))
 
     criterion_class = nn.CrossEntropyLoss()
@@ -146,9 +145,6 @@ def main():
     best_rank1 = -np.inf
     best_epoch = 0
     print("==> Strat training")
-
-    for epoch in range(start_epoch, args.max_epoch):
-        train(epoch, model, criterion_class, optimizer, trainloader, use_gpu)
 
     for epoch in range(start_epoch, args.max_epoch):
         start_train_time = time.time()

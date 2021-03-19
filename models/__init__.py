@@ -1,8 +1,8 @@
 from __future__ import absolute_import
-import ResNet_Metric
+import ResNet_metric
 
 __factory = {
-    'resnet50': ResNet_Metric.ResNet50,
+    'resnet50': ResNet_metric.ResNet50,
 }
 
 def get_names():
