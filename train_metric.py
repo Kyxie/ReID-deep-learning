@@ -97,7 +97,7 @@ def train(epoch, model, criterion_class, criterion_metric, optimizer, trainloade
         losses.update(loss.item(), pids.size(0))
 
         if (batch_idx+1) % args.print_freq == 0:
-            print('Epoch: [{0}][{1}/{2}]\t'
+            print('Epoch [{0}] Batch [{1}/{2}]\t'
                   'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
                   'Data {data_time.val:.3f} ({data_time.avg:.3f})\t'
                   'Loss {loss.val:.4f} ({loss.avg:.4f})\t'

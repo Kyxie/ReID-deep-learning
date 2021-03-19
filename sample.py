@@ -44,6 +44,7 @@ class RandomIdentitySampler(Sampler):
             t = self.index_dic[pid]
             # replace: whether images can be repeated or not
             # The images can be repeated only if the number of images of an identity is greater than 4
+
             if len(t) >= self.num_instances:
                 replace = False
             else:
@@ -56,7 +57,7 @@ class RandomIdentitySampler(Sampler):
         # ret: A list for 3004 images (each identity has 4 images)
         # Each of the 4 adjacent images represents an identity
         # but the adjacent identities are not necessarily in order
-        return ret
+        return iter(ret)
 
     def __len__(self):
         # P * K
@@ -66,5 +67,3 @@ class RandomIdentitySampler(Sampler):
 #     from data_manager import Market1501
 #     dataset = Market1501(root='data')
 #     sampler = RandomIdentitySampler(dataset.train, num_instances=4)
-#     sampler.__init__()
-#     sampler.__iter__()
