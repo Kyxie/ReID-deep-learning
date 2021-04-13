@@ -16,7 +16,6 @@ def mkdir_if_missing(directory):
             if e.errno != errno.EEXIST:
                 raise
 
-
 class AverageMeter(object):
     """Computes and stores the average and current value.
 
@@ -38,13 +37,11 @@ class AverageMeter(object):
         self.count += n
         self.avg = self.sum / self.count
 
-
 def save_checkpoint(state, is_best, fpath='checkpoint.pth.tar'):
     mkdir_if_missing(osp.dirname(fpath))
     torch.save(state, fpath)
     if is_best:
         shutil.copy(fpath, osp.join(osp.dirname(fpath), 'best_model.pth.tar'))
-
 
 class Logger(object):
     """
@@ -84,12 +81,10 @@ class Logger(object):
         if self.file is not None:
             self.file.close()
 
-
 def read_json(fpath):
     with open(fpath, 'r') as f:
         obj = json.load(f)
     return obj
-
 
 def write_json(obj, fpath):
     mkdir_if_missing(osp.dirname(fpath))

@@ -35,8 +35,8 @@ parser.add_argument('--width', type=int, default=128, help="width of an image (d
 
 # Optimization options
 parser.add_argument('--optim', type=str, default='adam', help="optimization algorithm (see optimizers.py)")
-parser.add_argument('--max-epoch', default=1, type=int, help="maximum epochs to run")
-parser.add_argument('--start-epoch', default=0, type=int, help="manual epoch number (useful on restarts)")
+parser.add_argument('--max-epoch', default=6, type=int, help="maximum epochs to run")
+parser.add_argument('--start-epoch', default=5, type=int, help="manual epoch number (useful on restarts)")
 parser.add_argument('--train-batch', default=32, type=int, help="train batch size")
 parser.add_argument('--test-batch', default=32, type=int, help="test batch size")
 parser.add_argument('--lr', '--learning-rate', default=0.0003, type=float, help="initial learning rate")
@@ -53,7 +53,7 @@ parser.add_argument('--htri-only', action='store_true', default=False, help="if 
 parser.add_argument('-a', '--arch', type=str, default='resnet50', choices=models.get_names())
 
 # Miscs
-parser.add_argument('--print-freq', type=int, default=1, help="print frequency")
+parser.add_argument('--print-freq', type=int, default=10, help="print frequency")
 parser.add_argument('--seed', type=int, default=1, help="manual seed")
 parser.add_argument('--resume', type=str, default='', metavar='PATH')
 parser.add_argument('--evaluate', action='store_true', help="evaluation only")
@@ -100,7 +100,7 @@ def train(epoch, model, criterion_class, criterion_metric, optimizer, trainloade
 
         if (batch_idx+1) % args.print_freq == 0:
             print("--------------------------------------------------------------------------------------------------------------")
-            print("  Epoch: {0} | Batch: [{1}/{2}] | Batch Time: {batch_time.val:.3f} s | Loss: {loss.avg:.4f} | Repr Loss: {xent_loss.avg:.4f} |  Metric Loss: {triplet_loss.avg:.4f}"
+            print("  Epoch: {0} | Batch: [{1}/{2}] | Batch Time: {batch_time.val:.3f} s | Loss: {loss.avg:.4f} | Class Loss: {xent_loss.avg:.4f} | Metric Loss: {triplet_loss.avg:.4f}"
                   .format(epoch+1, batch_idx+1, len(trainloader), batch_time=batch_time, loss=losses, xent_loss=xent_losses, triplet_loss=triplet_losses))
             print("--------------------------------------------------------------------------------------------------------------")
 
