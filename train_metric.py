@@ -35,7 +35,7 @@ parser.add_argument('--width', type=int, default=128, help="width of an image (d
 
 # Optimization options
 parser.add_argument('--optim', type=str, default='adam', help="optimization algorithm (see optimizers.py)")
-parser.add_argument('--max-epoch', default=60, type=int, help="maximum epochs to run")
+parser.add_argument('--max-epoch', default=1, type=int, help="maximum epochs to run")
 parser.add_argument('--start-epoch', default=0, type=int, help="manual epoch number (useful on restarts)")
 parser.add_argument('--train-batch', default=32, type=int, help="train batch size")
 parser.add_argument('--test-batch', default=32, type=int, help="test batch size")
@@ -270,6 +270,7 @@ def main():
 
         if (epoch + 1) > args.start_eval and args.eval_step > 0 and (epoch + 1) % args.eval_step == 0 or (
             epoch + 1) == args.max_epoch:
+            torch.save(model, 'logs/model.pkl')
             print("==> Test")
             rank1 = test(model, queryloader, galleryloader, use_gpu)
             is_best = rank1 > best_rank1

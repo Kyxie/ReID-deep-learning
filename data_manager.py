@@ -2,6 +2,7 @@ from __future__ import print_function, absolute_import
 import glob
 import re
 import os.path as osp
+from IPython import embed
 
 class Market1501(object):
     """
@@ -106,11 +107,86 @@ class Market1501(object):
                 pid = pid2label[pid]
             dataset.append((img_path, pid, camid))
         num_pids = len(pid_container)   # How many id in train set (751)
-        num_imgs = len(img_paths) # How many images
+        num_imgs = len(img_paths) # How many image
+        # embed()
+        return dataset, num_pids, num_imgs
+
+class UESTC(object):
+    """
+    Dataset statistics:
+    # identities: 15
+    # images: 15 (query) + 75 (gallery)
+    """
+
+    def __init__(self, root='data'):
+        # Paths of Data Sets
+        self.dataset_dir = osp.join(root, 'UESTC')
+        self.query_dir = osp.join(self.dataset_dir, 'query')
+        self.gallery_dir = osp.join(self.dataset_dir, 'galry')
+
+        self._check_before_run()
+
+        # Test Set
+        query, num_query_pids, num_query_imgs = self._process_dir(self.query_dir)
+        # query: A list which templete is: (image path, person id, camera id)
+        # num_query_pids: Total person number in train set
+        # num_query_imgs: Total image number in train set
+        # embed()
+        gallery, num_gallery_pids, num_gallery_imgs = self._process_dir(self.gallery_dir)
+
+        # Total
+        num_total_pids = num_query_pids
+        num_total_imgs = num_query_imgs + num_gallery_imgs
+
+        print("=> UESTC loaded")
+        print("Dataset statistics:")
+        print("  ------------------------------")
+        print("  subset   | # ids | # images")
+        print("  ------------------------------")
+        print("  query    | {:5d} | {:8d}".format(num_query_pids, num_query_imgs))
+        print("  gallery  | {:5d} | {:8d}".format(num_gallery_pids, num_gallery_imgs))
+        print("  ------------------------------")
+        print("  total    | {:5d} | {:8d}".format(num_total_pids, num_total_imgs))
+        print("  ------------------------------")
+
+        self.query = query
+        self.gallery = gallery
+
+        self.num_query_pids = num_query_pids
+        self.num_gallery_pids = num_gallery_pids
+
+        # embed()
+
+    def _check_before_run(self):
+        # Check if all paths are available
+        if not osp.exists(self.dataset_dir):
+            print("'{}' is not available".format(self.dataset_dir))
+        if not osp.exists(self.query_dir):
+            print("'{}' is not available".format(self.query_dir))
+        if not osp.exists(self.gallery_dir):
+            print("'{}' is not available".format(self.gallery_dir))
+
+    def _process_dir(self, dir_path):
+        img_paths = glob.glob(osp.join(dir_path, '*.jpg'))   # Add jpg file in dir_path
+        dataset = []
+        pid_set = []
+        cam_set = []
+        for img_path in img_paths:
+            if(img_path[20] == '.'):
+                pid = img_path[19]
+            else:
+                pid = img_path[19] + img_path[20]
+            camid = img_path[17]
+            pid_set.append(pid)
+            cam_set.append(camid)
+            dataset.append((img_path, pid, camid))
+        num_pids = len(pid_set)   # How many id
+        num_imgs = len(img_paths) # How many image
         return dataset, num_pids, num_imgs
 
 __img_factory = {
-    'market1501': Market1501
+    'market1501': Market1501,
+    'UESTC': UESTC
 }
 
 __vid_factory = {
@@ -118,7 +194,6 @@ __vid_factory = {
 }
 
 def get_names():
-    # return __img_factory.keys() + __vid_factory.keys()
     return __img_factory.keys()
 
 def init_img_dataset(name, **kwargs):
@@ -131,5 +206,5 @@ def init_vid_dataset(name, **kwargs):
     pass
 
 # if __name__ == '__main__':
-#     data = Market1501()
+#     data = UESTC()
 #     data.__init__()
