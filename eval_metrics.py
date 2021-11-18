@@ -1,5 +1,7 @@
 from __future__ import print_function, absolute_import
 import numpy as np
+from PIL import Image
+from IPython import embed
 
 def eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
     """Evaluation with market1501 metric
@@ -46,13 +48,20 @@ def eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
         tmp_cmc = np.asarray(tmp_cmc) * orig_cmc
         AP = tmp_cmc.sum() / num_rel
         all_AP.append(AP)
+        
+        pic = []
+        print("{}: {}".format(q_idx, orig_cmc))
+        # Pull up the top 5 hitted pictures
+        if(q_idx == 7):
+            for i in range(5):
+                pic.append(order[i])
+                img = Image.open('data/UESTC/galry/{}_{}.jpg'.format(int(pic[i]/num_q)+2, pic[i]%num_q))
+                img.show()
 
     assert num_valid_q > 0, "Error: all query identities do not appear in gallery"
-
     all_cmc = np.asarray(all_cmc).astype(np.float32)
     all_cmc = all_cmc.sum(0) / num_valid_q
     mAP = np.mean(all_AP)
-
     return all_cmc, mAP
 
 def evaluate(distmat, q_pids, g_pids, q_camids, g_camids, max_rank=50):

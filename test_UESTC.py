@@ -99,6 +99,8 @@ def test(model, queryloader, galleryloader, use_gpu, ranks=[1, 5, 10, 20]):
         gf = torch.cat(gf, 0)
         g_pids = np.asarray(g_pids)
         g_camids = np.asarray(g_camids)
+        # from IPython import embed
+        # embed()
         print("Extracted features for gallery set, obtained {}-by-{} matrix".format(gf.size(0), gf.size(1)))
 
     print("==> BatchTime(s)/BatchSize(img): {:.3f}/{}".format(batch_time.avg, args.test_batch))
@@ -174,7 +176,7 @@ if __name__ == '__main__':
         pin_memory=pin_memory, drop_last=False
     )
 
-    model = torch.load('logs/model.pkl')
+    model = torch.load('logs/model_metric.pkl')
     print("==> Test")
     rank1 = test(model, queryloader, galleryloader, use_gpu)
 

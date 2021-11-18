@@ -71,8 +71,8 @@ def test(model, queryloader, galleryloader, use_gpu, ranks=[1, 5, 10, 20]):
             qf.append(features)
             q_pids.extend(pids)
             q_camids.extend(camids)
-        from IPython import embed
-        embed()
+        # from IPython import embed
+        # embed()
         qf = torch.cat(qf, 0)
         q_pids = np.asarray(q_pids)
         q_camids = np.asarray(q_camids)
@@ -170,7 +170,7 @@ if __name__ == '__main__':
         pin_memory=pin_memory, drop_last=False
     )
 
-    model = torch.load('logs/model.pkl')
+    model = torch.load('logs/model_metric.pkl')
     print("==> Test")
     rank1 = test(model, queryloader, galleryloader, use_gpu)
 

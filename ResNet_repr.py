@@ -7,7 +7,7 @@ from torch import nn
 from torch.nn import functional as F
 
 class ResNet50(nn.Module):
-    def __init__(self, num_classes, loss={'softmax, metric'}, **kwargs):
+    def __init__(self, num_classes, loss={'softmax', 'metric'}, **kwargs):
         super(ResNet50, self).__init__()
         resnet50 = torchvision.models.resnet50(pretrained=True)
         self.loss = loss

@@ -29,7 +29,7 @@ parser.add_argument('--width', type=int, default=128, help="width of an image (d
 
 # Optimization options
 parser.add_argument('--optim', type=str, default='adam', help="optimization algorithm (see optimizers.py)")
-parser.add_argument('--max-epoch', default=60, type=int, help="maximum epochs to run")
+parser.add_argument('--max-epoch', default=20, type=int, help="maximum epochs to run")
 parser.add_argument('--start-epoch', default=0, type=int, help="manual epoch number (useful on restarts)")
 parser.add_argument('--train-batch', default=32, type=int, help="train batch size")
 parser.add_argument('--test-batch', default=32, type=int, help="test batch size")
@@ -48,7 +48,7 @@ parser.add_argument('--resume', type=str, default='', metavar='PATH')
 parser.add_argument('--evaluate', action='store_true', help="evaluation only")
 parser.add_argument('--eval-step', type=int, default=-1, help="run evaluation for every N epochs (set to -1 to test after training)")
 parser.add_argument('--start-eval', type=int, default=0, help="start to evaluate after specific epoch")
-parser.add_argument('--save-dir', type=str, default='log')
+parser.add_argument('--save-dir', type=str, default='logs')
 parser.add_argument('--use-cpu', action='store_true', help="use cpu")
 parser.add_argument('--gpu-devices', default='0', type=str, help="gpu devices")
 
@@ -70,13 +70,13 @@ def main():
         sys.stdout = Logger(osp.join(args.save_dir, 'log_test.txt'))
     print("==========\nArgs:{}\n==========".format(args))
 
-    # # Uncomment when gpu is used
-    # if use_gpu:
-    #     print("Currently using GPU {}".format(args.gpu_devices))
-    #     cudnn.benchmark = True
-    #     torch.cuda.manual_seed_all(args.seed)
-    # else:
-    #     print("Currently using CPU (GPU is highly recommended)")
+    # Uncomment when gpu is used
+    if use_gpu:
+        print("Currently using GPU {}".format(args.gpu_devices))
+        cudnn.benchmark = True
+        torch.cuda.manual_seed_all(args.seed)
+    else:
+        print("Currently using CPU (GPU is highly recommended)")
 
     dataset = data_manager.init_img_dataset(root=args.root, name=args.dataset)
 
@@ -131,9 +131,9 @@ def main():
         model.load_state_dict(checkpoint['state_dict'])
         start_epoch = checkpoint['epoch']
 
-    # # Uncomment when gpu is used
-    # if use_gpu:
-    #     model = nn.DataParallel(model).cuda()
+    # Uncomment when gpu is used
+    if use_gpu:
+        model = nn.DataParallel(model).cuda()
 
     if args.evaluate:
         print("Evaluate only!")
@@ -156,6 +156,7 @@ def main():
 
         if (epoch + 1) > args.start_eval and args.eval_step > 0 and (epoch + 1) % args.eval_step == 0 or (
             epoch + 1) == args.max_epoch:
+            torch.save(model, 'logs/model_softmax.pkl')
             print("==> Test")
             rank1 = test(model, queryloader, galleryloader, use_gpu)
             is_best = rank1 > best_rank1
@@ -189,9 +190,9 @@ def train(epoch, model, criterion_class, optimizer, trainloader, use_gpu):
 
     end = time.time()
     for batch_idx, (imgs, pids, _) in enumerate(trainloader):
-        # # Uncomment if gpu is used
-        # if use_gpu:
-        #     imgs, pids = imgs.cuda(), pids.cuda()
+        # Uncomment if gpu is used
+        if use_gpu:
+            imgs, pids = imgs.cuda(), pids.cuda()
 
         # measure elapsed time
         batch_time.update(time.time() - end)
